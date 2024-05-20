@@ -179,6 +179,7 @@ const logoutUser = async (request, respond) => {
   }
 };
 
+
 module.exports = {
   createUser,
   loginUser,
@@ -189,4 +190,5 @@ module.exports = {
   refreshToken,
   logoutUser,
   deleteMany,
+  logoutUser,
 };
