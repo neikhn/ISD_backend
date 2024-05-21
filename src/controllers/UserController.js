@@ -7,26 +7,31 @@ const createUser = async (req, res) => {
     const reg = /^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/;
     const isCheckEmail = reg.test(email);
     if (!email || !password || !confirmPassword) {
-      return res.status(404).json({
+      return res.status(400).json({
         status: "ERR",
         message: "Parameter Required",
       });
     } else if (!isCheckEmail) {
-      return res.status(404).json({
+      return res.status(400).json({
         status: "ERR",
         message: "Invalid Email",
       });
     } else if (password !== confirmPassword) {
-      return res.status(404).json({
+      return res.status(400).json({
         status: "ERR",
         message: "Invalid Confirm Password",
       });
     }
     const response = await UserService.createUser(req.body);
+    if (response.status === "ERR") {
+      console.log(response);
+      return res.status(409).json(response); // Conflict: email đã tồn tại
+    }
+    console.log(response);
     return res.status(200).json(response);
   } catch (error) {
-    return res.status(404).json({
-      message: error,
+    return res.status(500).json({
+      message: error.message,
     });
   }
 };
@@ -178,7 +183,6 @@ const logoutUser = async (request, respond) => {
     });
   }
 };
-
 
 module.exports = {
   createUser,
